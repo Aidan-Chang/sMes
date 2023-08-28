@@ -40,6 +40,7 @@ public partial class Form3 : Form {
         textBox3.DataBindings.Add(nameof(textBox3.Text), EndPoint, nameof(EndPoint.Password));
         comboBox1.DataBindings.Add(nameof(comboBox1.SelectedItem), EndPoint, nameof(EndPoint.DriverName));
         comboBox2.DataBindings.Add(nameof(comboBox2.SelectedItem), EndPoint, nameof(EndPoint.DatabaseName));
+        checkBox1.DataBindings.Add(nameof(checkBox1.Checked), EndPoint, nameof(EndPoint.Secure));
     }
 
     private void toolStripButton1_Click(object sender, EventArgs e) {
