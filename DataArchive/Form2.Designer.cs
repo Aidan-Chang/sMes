@@ -57,22 +57,22 @@
             // 
             // toolStripButton1
             // 
-            resources.ApplyResources(toolStripButton1, "toolStripButton1");
             toolStripButton1.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            resources.ApplyResources(toolStripButton1, "toolStripButton1");
             toolStripButton1.Name = "toolStripButton1";
             toolStripButton1.Click += toolStripButton1_Click;
             // 
             // toolStripButton2
             // 
-            resources.ApplyResources(toolStripButton2, "toolStripButton2");
             toolStripButton2.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            resources.ApplyResources(toolStripButton2, "toolStripButton2");
             toolStripButton2.Name = "toolStripButton2";
             toolStripButton2.Click += toolStripButton2_Click;
             // 
             // toolStripStatusLabel1
             // 
-            resources.ApplyResources(toolStripStatusLabel1, "toolStripStatusLabel1");
             toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            resources.ApplyResources(toolStripStatusLabel1, "toolStripStatusLabel1");
             // 
             // statusStrip1
             // 
@@ -82,29 +82,28 @@
             // 
             // toolStripStatusLabel5
             // 
-            resources.ApplyResources(toolStripStatusLabel5, "toolStripStatusLabel5");
             toolStripStatusLabel5.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            resources.ApplyResources(toolStripStatusLabel5, "toolStripStatusLabel5");
             toolStripStatusLabel5.Name = "toolStripStatusLabel5";
             // 
             // toolStripStatusLabel2
             // 
-            resources.ApplyResources(toolStripStatusLabel2, "toolStripStatusLabel2");
             toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            resources.ApplyResources(toolStripStatusLabel2, "toolStripStatusLabel2");
             toolStripStatusLabel2.Spring = true;
             // 
             // toolStripStatusLabel3
             // 
-            resources.ApplyResources(toolStripStatusLabel3, "toolStripStatusLabel3");
             toolStripStatusLabel3.Name = "toolStripStatusLabel3";
+            resources.ApplyResources(toolStripStatusLabel3, "toolStripStatusLabel3");
             // 
             // toolStripStatusLabel4
             // 
-            resources.ApplyResources(toolStripStatusLabel4, "toolStripStatusLabel4");
             toolStripStatusLabel4.Name = "toolStripStatusLabel4";
+            resources.ApplyResources(toolStripStatusLabel4, "toolStripStatusLabel4");
             // 
             // panel1
             // 
-            resources.ApplyResources(panel1, "panel1");
             panel1.BackColor = SystemColors.Window;
             panel1.Controls.Add(comboBox2);
             panel1.Controls.Add(textBox3);
@@ -116,40 +115,41 @@
             panel1.Controls.Add(label3);
             panel1.Controls.Add(label2);
             panel1.Controls.Add(label1);
+            resources.ApplyResources(panel1, "panel1");
             panel1.Name = "panel1";
             // 
             // comboBox2
             // 
-            resources.ApplyResources(comboBox2, "comboBox2");
             comboBox2.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox2.FormattingEnabled = true;
+            resources.ApplyResources(comboBox2, "comboBox2");
             comboBox2.Name = "comboBox2";
             // 
             // textBox3
             // 
-            resources.ApplyResources(textBox3, "textBox3");
             textBox3.BorderStyle = BorderStyle.FixedSingle;
+            resources.ApplyResources(textBox3, "textBox3");
             textBox3.Name = "textBox3";
             textBox3.UseSystemPasswordChar = true;
             // 
             // textBox2
             // 
-            resources.ApplyResources(textBox2, "textBox2");
             textBox2.BorderStyle = BorderStyle.FixedSingle;
+            resources.ApplyResources(textBox2, "textBox2");
             textBox2.Name = "textBox2";
             // 
             // textBox1
             // 
-            resources.ApplyResources(textBox1, "textBox1");
             textBox1.BorderStyle = BorderStyle.FixedSingle;
+            resources.ApplyResources(textBox1, "textBox1");
             textBox1.Name = "textBox1";
             // 
             // comboBox1
             // 
-            resources.ApplyResources(comboBox1, "comboBox1");
             comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox1.FormattingEnabled = true;
             comboBox1.Items.AddRange(new object[] { resources.GetString("comboBox1.Items"), resources.GetString("comboBox1.Items1") });
+            resources.ApplyResources(comboBox1, "comboBox1");
             comboBox1.Name = "comboBox1";
             // 
             // label5

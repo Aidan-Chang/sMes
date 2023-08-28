@@ -1,13 +1,14 @@
-﻿using System.ComponentModel;
+﻿using DataArchive.Driver;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace DataArchive.Model;
 
 public class DataModel: INotifyPropertyChanged {
 
-    public Source? Source { get; set; }
+    public EndPoint? Source { get; set; }
 
-    public Target? Target { get; set; }
+    public EndPoint? Target { get; set; }
 
     private Options.Mode mode = Options.Mode.Copy;
     public Options.Mode Mode {
@@ -80,20 +81,12 @@ public class DataModel: INotifyPropertyChanged {
     private void NotifyPropertyChanged([CallerMemberName] string name = "")
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-    public void Reset() {
-        Mode = Options.Mode.Copy;
-        BatchSize = 50;
-        RecoveryMode = Options.RecoveryMode.NotSet;
-        RebuildIndex = false;
-        FileName = null;
-        FilePath = null;
-    }
-
+    public bool IsDraft { get; set; } = false;
 }
 
-public class Source: INotifyPropertyChanged {
+public class EndPoint : INotifyPropertyChanged {
 
-    public Options.SourceDriver Driver { get; set; } = Options.SourceDriver.Mssql;
+    public IDriver? Driver { get; set; } = null;
 
     public string Host { get; set; } = string.Empty;
 
@@ -101,32 +94,24 @@ public class Source: INotifyPropertyChanged {
 
     public string Password { get; set; } = string.Empty;
 
-    public string Database { get; set; } = string.Empty;
+    public string DatabaseName { get; set; } = string.Empty;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public Source Clone() {
-        return MemberwiseClone() as Source ?? new();
+    public EndPoint Clone() {
+        return MemberwiseClone() as EndPoint ?? new();
     }
 
-}
-
-public class Target : INotifyPropertyChanged {
-
-    public Options.TargetDriver Driver { get; set; } = Options.TargetDriver.Mssql;
-
-    public string Host { get; set; } = string.Empty;
-
-    public string UserName { get; set; } = string.Empty;
-
-    public string Password { get; set; } = string.Empty;
-
-    public string Database { get; set; } = string.Empty;
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    public Target Clone() {
-        return MemberwiseClone() as Target ?? new();
+    public bool Validated {
+        get {
+            if (Driver != null) {
+                string? connectionString = Driver.GetConnectionString(this);
+                if (string.IsNullOrEmpty(connectionString) == false) {
+                    Driver.Connection.ConnectionString = connectionString;
+                }
+            }
+            return false;
+        }
     }
 
 }
@@ -144,17 +129,6 @@ public static class Options {
     public enum Mode {
         Copy,
         Move,
-    }
-
-    public enum SourceDriver {
-        Mssql,
-        Oracle
-    }
-
-    public enum TargetDriver {
-        Mssql,
-        Oracle,
-        SqlText,
     }
 
 }
