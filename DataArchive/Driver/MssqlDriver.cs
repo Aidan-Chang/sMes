@@ -11,7 +11,15 @@ public class MssqlDriver : IDriver {
 
     public Direction Direction => Direction.InputOutput;
 
-    public IDbConnection Connection => new SqlConnection();
+    private IDbConnection? connection = null;
+    public IDbConnection Connection {
+        get {
+            if (connection == null) {
+                connection = new SqlConnection();
+            }
+            return connection;
+        }
+    }
 
     public string? GetConnectionString(EndPoint endpoint) {
         if (string.IsNullOrEmpty(endpoint.Host) == false && string.IsNullOrEmpty(endpoint.UserName) == false && string.IsNullOrEmpty(endpoint.Password) == false) {
@@ -21,7 +29,18 @@ public class MssqlDriver : IDriver {
     }
 
     public bool Validate(EndPoint endPoint) {
-        throw new NotImplementedException();
+        string? connectionString = GetConnectionString(endPoint);
+        if (string.IsNullOrEmpty(connectionString) == false) {
+            Connection.ConnectionString = connectionString;
+            try {
+                Connection.Open();
+                Connection.Close();
+                return true;
+            }
+            catch (Exception ex) {
+            }
+        }
+        return false;
     }
 
     public IEnumerable<string> GetDatabases() {

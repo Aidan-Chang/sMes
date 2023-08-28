@@ -10,7 +10,15 @@ public class OracleDriver : IDriver {
 
     public Direction Direction => Direction.InputOutput;
 
-    public IDbConnection Connection => new OracleConnection();
+    private IDbConnection? connection = null;
+    public IDbConnection Connection {
+        get {
+            if (connection == null) {
+                connection = new OracleConnection();
+            }
+            return connection;
+        }
+    }
 
     public string? GetConnectionString(EndPoint endpoint) {
         if (string.IsNullOrEmpty(endpoint.Host) == false && string.IsNullOrEmpty(endpoint.UserName) == false && string.IsNullOrEmpty(endpoint.Password) == false) {

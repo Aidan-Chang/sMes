@@ -44,7 +44,7 @@ public partial class Form3 : Form {
 
     private void toolStripButton1_Click(object sender, EventArgs e) {
         IDriver? driver = DriverUtility.Drivers.SingleOrDefault(x => x.Name == EndPoint.DriverName);
-        if (driver != null && EndPoint.Validated) {
+        if (driver != null && driver.Validate(EndPoint)) {
             DatabaseNames = driver.GetDatabases().ToList();
             if (DatabaseNames.Count() > 0) {
                 toolStripStatusLabel5.Image = Resources.accept;

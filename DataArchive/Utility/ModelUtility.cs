@@ -50,10 +50,7 @@ public static class ModelUtility {
             Filter = "Archive Data Setting File|*.adf",
         };
         if (dialog.ShowDialog() == DialogResult.OK) {
-            using FileStream fs = new FileStream(dialog.FileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            using StreamWriter writer = new StreamWriter(fs);
-            string data = JsonSerializer.Serialize(model);
-            writer.Write(data);
+            Save(model, dialog.FileName);
             return new ModelAccessResult {
                 State = ModelAccessState.Success,
                 Model = model,
@@ -86,6 +83,7 @@ public static class ModelUtility {
             using MemoryStream ms = new MemoryStream();
             using GZipStream gz = new GZipStream(fs, CompressionMode.Decompress);
             gz.CopyTo(ms);
+            gz.Close();
             var json = Encoding.UTF8.GetString(ms.ToArray());
             DataModel? result = JsonSerializer.Deserialize<DataModel>(json);
             return new ModelAccessResult {
@@ -109,6 +107,7 @@ public static class ModelUtility {
             using FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
             using GZipStream gz = new(fs, CompressionLevel.Optimal);
             gz.Write(data, 0, data.Length);
+            gz.Close();
             model.IsDraft = false;
             return new ModelAccessResult {
                 State = ModelAccessState.Success,

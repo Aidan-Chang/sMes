@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace DataArchive.Model;
 
@@ -53,9 +54,10 @@ public class DataModel: INotifyPropertyChanged {
             }
         }
     }
-
+    [JsonIgnore]
     [IgnoreDataMember]
     private string? fileName;
+    [JsonIgnore]
     [IgnoreDataMember]
     public string? FileName {
         get => fileName;
@@ -67,8 +69,10 @@ public class DataModel: INotifyPropertyChanged {
         }
     }
 
+    [JsonIgnore]
     [IgnoreDataMember]
     private string? filePath;
+    [JsonIgnore]
     [IgnoreDataMember]
     public string? FilePath {
         get => filePath;

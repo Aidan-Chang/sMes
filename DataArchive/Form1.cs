@@ -156,6 +156,7 @@ public partial class Form1 : Form {
                             switch (openResult.State) {
                                 case ModelAccessState.Success:
                                     model.Load(openResult.Model!);
+                                    MessageBox.Show("Load Success", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     break;
                                 case ModelAccessState.Error:
                                     MessageBox.Show(openResult.Exception?.Message ?? "", "Get unexcetpt error");
@@ -174,6 +175,7 @@ public partial class Form1 : Form {
                     switch (openResult.State) {
                         case ModelAccessState.Success:
                             model.Load(openResult.Model!);
+                            MessageBox.Show("Load Success", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             break;
                         case ModelAccessState.Error:
                             MessageBox.Show(openResult.Exception?.Message ?? "", "Get unexcetpt error");
@@ -194,6 +196,7 @@ public partial class Form1 : Form {
                             switch (openResult.State) {
                                 case ModelAccessState.Success:
                                     model.Load(openResult.Model!);
+                                    MessageBox.Show("Load Success", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     break;
                                 case ModelAccessState.Error:
                                     MessageBox.Show(openResult.Exception?.Message ?? "", "Get unexcetpt error");
@@ -212,6 +215,7 @@ public partial class Form1 : Form {
                     switch (openResult.State) {
                         case ModelAccessState.Success:
                             model.Load(openResult.Model!);
+                            MessageBox.Show("Load Success", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             break;
                         case ModelAccessState.Error:
                             MessageBox.Show(openResult.Exception?.Message ?? "", "Get unexcetpt error");
@@ -225,6 +229,7 @@ public partial class Form1 : Form {
             switch (openResult.State) {
                 case ModelAccessState.Success:
                     model.Load(openResult.Model!);
+                    MessageBox.Show("Load Success", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
                 case ModelAccessState.Error:
                     MessageBox.Show(openResult.Exception?.Message ?? "", "Get unexcetpt error");
@@ -237,6 +242,7 @@ public partial class Form1 : Form {
         var saveResult = model.Save();
         switch (saveResult.State) {
             case ModelAccessState.Success:
+                MessageBox.Show("Save Success", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 break;
             case ModelAccessState.Cancel:
                 break;
@@ -250,6 +256,7 @@ public partial class Form1 : Form {
         var saveResult = model.SaveAs();
         switch (saveResult.State) {
             case ModelAccessState.Success:
+                MessageBox.Show("Save Success", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 break;
             case ModelAccessState.Cancel:
                 break;
