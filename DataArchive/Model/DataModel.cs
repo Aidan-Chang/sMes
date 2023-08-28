@@ -1,6 +1,6 @@
-﻿using DataArchive.Driver;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 
 namespace DataArchive.Model;
 
@@ -54,7 +54,9 @@ public class DataModel: INotifyPropertyChanged {
         }
     }
 
+    [IgnoreDataMember]
     private string? fileName;
+    [IgnoreDataMember]
     public string? FileName {
         get => fileName;
         set {
@@ -65,7 +67,9 @@ public class DataModel: INotifyPropertyChanged {
         }
     }
 
+    [IgnoreDataMember]
     private string? filePath;
+    [IgnoreDataMember]
     public string? FilePath {
         get => filePath;
         set {
@@ -81,54 +85,6 @@ public class DataModel: INotifyPropertyChanged {
     private void NotifyPropertyChanged([CallerMemberName] string name = "")
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-    public bool IsDraft { get; set; } = false;
-}
-
-public class EndPoint : INotifyPropertyChanged {
-
-    public IDriver? Driver { get; set; } = null;
-
-    public string Host { get; set; } = string.Empty;
-
-    public string UserName { get; set; } = string.Empty;
-
-    public string Password { get; set; } = string.Empty;
-
-    public string DatabaseName { get; set; } = string.Empty;
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    public EndPoint Clone() {
-        return MemberwiseClone() as EndPoint ?? new();
-    }
-
-    public bool Validated {
-        get {
-            if (Driver != null) {
-                string? connectionString = Driver.GetConnectionString(this);
-                if (string.IsNullOrEmpty(connectionString) == false) {
-                    Driver.Connection.ConnectionString = connectionString;
-                }
-            }
-            return false;
-        }
-    }
-
-}
-
-public static class Options {
-
-    public static int[] BatchSizes =  { 50, 100, 500, 1000 };
-
-    public enum RecoveryMode {
-        Simple,
-        Full,
-        NotSet,
-    }
-
-    public enum Mode {
-        Copy,
-        Move,
-    }
-
+    [IgnoreDataMember]
+    public bool IsDraft = false;
 }

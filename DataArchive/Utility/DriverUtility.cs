@@ -23,8 +23,10 @@ public static class DriverUtility {
         var types = AppDomain.CurrentDomain
             .GetAssemblies()
             .SelectMany(s => s.GetTypes())
-            .Where(p => p.IsClass && type.IsAssignableFrom(p))
-            .Select(x => (IDriver)Activator.CreateInstance(x)!);
+            .Where(
+                p => p.IsClass &&
+                type.IsAssignableFrom(p))
+            .Select(x => (Activator.CreateInstance(x) as IDriver)!);
         if (directions == null) {
             return types;
         }

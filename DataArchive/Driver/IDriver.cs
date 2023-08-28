@@ -13,6 +13,8 @@ public interface IDriver {
 
     public string? GetConnectionString(EndPoint endpoint);
 
+    public bool Validate(EndPoint endPoint);
+
     public IEnumerable<string> GetDatabases();
 
 }

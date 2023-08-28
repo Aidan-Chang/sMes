@@ -4,9 +4,9 @@ using System.Data;
 
 namespace DataArchive.Driver;
 
-public class OracleDriver : DriverBase, IDriver {
+public class OracleDriver : IDriver {
 
-    public override string Name => "Oracle";
+    public string Name => "Oracle";
 
     public Direction Direction => Direction.InputOutput;
 
@@ -17,6 +17,10 @@ public class OracleDriver : DriverBase, IDriver {
             return $"Server={endpoint.Host};User Id={endpoint.UserName};Password={endpoint.Password};{(string.IsNullOrEmpty(endpoint.DatabaseName) ? string.Empty : $"Database={endpoint.DatabaseName};")}";
         }
         return null;
+    }
+
+    public bool Validate(EndPoint endPoint) {
+        throw new NotImplementedException();
     }
 
     public IEnumerable<string> GetDatabases() {

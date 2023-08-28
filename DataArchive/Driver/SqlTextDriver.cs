@@ -3,9 +3,9 @@ using System.Data;
 
 namespace DataArchive.Driver;
 
-public class SqlTextDriver : DriverBase, IDriver {
+public class SqlTextDriver : IDriver {
 
-    public override string Name => "SqlText";
+    public string Name => "SqlText";
 
     public Direction Direction => Direction.Output;
 
@@ -13,6 +13,10 @@ public class SqlTextDriver : DriverBase, IDriver {
 
     public string? GetConnectionString(EndPoint endpoint) {
         throw new NotImplementedException();
+    }
+
+    public bool Validate(EndPoint endPoint) {
+        return true;
     }
 
     public IEnumerable<string> GetDatabases() {

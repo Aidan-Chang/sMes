@@ -11,8 +11,7 @@ public partial class Form2 : Form {
     public List<string> DatabaseNames { get; private set; } = new List<string>();
     public List<IDriver> Drivers
         => DriverUtility.Drivers
-            .Where(x => new[] { Direction.Input, Direction.InputOutput }
-            .Contains(x.Direction))
+            .Where(x => new[] { Direction.Input, Direction.InputOutput }.Contains(x.Direction))
             .OrderBy(x => x.Direction)
             .ThenBy(x => x.Name)
             .ToList();
@@ -22,15 +21,9 @@ public partial class Form2 : Form {
         InitializeComponent();
 
         // drivers apply to combobox items
-        comboBox1.Items.Clear();
+        comboBox1.DataSource = new BindingSource() { DataSource = Drivers };
         comboBox1.DisplayMember = "Name";
         comboBox1.ValueMember = "Name";
-        foreach (var item in Drivers) {
-            comboBox1.Items.Add(item);
-        }
-        comboBox1.SelectedValueChanged += (sender, value) => {
-            EndPoint.Driver = (comboBox1.SelectedItem as IDriver);
-        };
 
         // database names apply to combobox datasource
         comboBox2.DataSource = new BindingSource() { DataSource = DatabaseNames };
@@ -44,12 +37,12 @@ public partial class Form2 : Form {
         textBox1.DataBindings.Add(nameof(textBox1.Text), EndPoint, nameof(EndPoint.Host));
         textBox2.DataBindings.Add(nameof(textBox2.Text), EndPoint, nameof(EndPoint.UserName));
         textBox3.DataBindings.Add(nameof(textBox3.Text), EndPoint, nameof(EndPoint.Password));
-        comboBox1.DataBindings.Add(nameof(comboBox1.SelectedItem), EndPoint, nameof(EndPoint.Driver));
+        comboBox1.DataBindings.Add(nameof(comboBox1.SelectedValue), EndPoint, nameof(EndPoint.DriverName));
         comboBox2.DataBindings.Add(nameof(comboBox2.SelectedItem), EndPoint, nameof(EndPoint.DatabaseName));
     }
 
     private void toolStripButton1_Click(object sender, EventArgs e) {
-        IDriver? driver = EndPoint.Driver;
+        IDriver? driver = DriverUtility.Drivers.SingleOrDefault(x => x.Name == EndPoint.DriverName);
         if (driver != null && EndPoint.Validated) {
             DatabaseNames = driver.GetDatabases().ToList();
             if (DatabaseNames.Count() > 0) {
