@@ -2,17 +2,13 @@
 
 namespace DataArchive.Model;
 
-public class EndPoint : INotifyPropertyChanged {
+public class Respository : INotifyPropertyChanged {
 
-    private string? driverName = string.Empty;
-    public string? DriverName {
-        get { return driverName; }
-        set { driverName = value; }
-    }
+    public string? Provider { get; set; } = null;
 
     public string Host { get; set; } = string.Empty;
 
-    public bool Secure { get; set; } = false;
+    public bool Trust { get; set; } = false;
 
     public string UserName { get; set; } = string.Empty;
 
@@ -22,8 +18,8 @@ public class EndPoint : INotifyPropertyChanged {
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public EndPoint Clone() {
-        return MemberwiseClone() as EndPoint ?? new();
+    public Respository Clone() {
+        return MemberwiseClone() as Respository ?? new();
     }
 
 }

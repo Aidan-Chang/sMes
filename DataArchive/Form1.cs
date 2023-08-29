@@ -5,7 +5,7 @@ namespace DataArchive;
 
 public partial class Form1 : Form {
 
-    private DataModel model = new();
+    private ArchiveFile archive = new();
 
     public Form1() {
         InitializeComponent();
@@ -15,10 +15,10 @@ public partial class Form1 : Form {
             ToolStripMenuItem item = new ToolStripMenuItem {
                 Name = $"{mode.ToString().ToLower()}modeToolStripMenuItem",
                 Tag = mode.ToString(),
-                Checked = mode == model.Mode,
+                Checked = mode == archive.Mode,
             };
             item.Click += (sender, target)
-                => model.Mode = Enum.TryParse((sender as ToolStripMenuItem)?.Tag?.ToString() ?? "Copy", out Options.Mode m) ? m : Options.Mode.Copy;
+                => archive.Mode = Enum.TryParse((sender as ToolStripMenuItem)?.Tag?.ToString() ?? "Copy", out Options.Mode m) ? m : Options.Mode.Copy;
             modeToolStripMenuItem.DropDownItems.Add(item);
         }
 
@@ -27,10 +27,10 @@ public partial class Form1 : Form {
             ToolStripMenuItem item = new ToolStripMenuItem {
                 Text = batchSize.ToString(),
                 Tag = batchSize.ToString(),
-                Checked = batchSize == model.BatchSize,
+                Checked = batchSize == archive.BatchSize,
             };
             item.Click += (sender, target)
-                => model.BatchSize = int.TryParse((sender as ToolStripMenuItem)?.Tag?.ToString() ?? "50", out int size) ? size : 50;
+                => archive.BatchSize = int.TryParse((sender as ToolStripMenuItem)?.Tag?.ToString() ?? "50", out int size) ? size : 50;
             batchSizeToolStripMenuItem.DropDownItems.Add(item);
         }
 
@@ -39,15 +39,15 @@ public partial class Form1 : Form {
             ToolStripMenuItem item = new ToolStripMenuItem {
                 Name = $"{mode.ToString().ToLower()}recoveryModeToolStripMenuItem",
                 Tag = mode.ToString(),
-                Checked = mode == model.RecoveryMode,
+                Checked = mode == archive.RecoveryMode,
             };
             item.Click += (sender, target)
-                => model.RecoveryMode = Enum.TryParse((sender as ToolStripMenuItem)?.Tag?.ToString() ?? "NotSet", out Options.RecoveryMode m) ? m : Options.RecoveryMode.NotSet;
+                => archive.RecoveryMode = Enum.TryParse((sender as ToolStripMenuItem)?.Tag?.ToString() ?? "NotSet", out Options.RecoveryMode m) ? m : Options.RecoveryMode.NotSet;
             recoveryModeToolStripMenuItem.DropDownItems.Add(item);
         }
 
         // menu language
-        foreach (var culture in ComponentUtility.GetAvailableCultures(this)) {
+        foreach (var culture in CultureUtility.GetAvailableCultures(this)) {
             ToolStripMenuItem item = new ToolStripMenuItem {
                 Text = culture.DisplayName,
                 Tag = culture.Name,
@@ -55,8 +55,7 @@ public partial class Form1 : Form {
             };
             item.Click += (sender, target) => {
                 var caltureName = (sender as ToolStripMenuItem)?.Tag?.ToString() ?? "en";
-                ComponentUtility.SaveCulture(caltureName);
-                ComponentUtility.ApplyCaultureUI(this);
+                this.ApplyCultureUI(caltureName);
                 foreach (var dropdownItem in languageToolStripMenuItem.DropDownItems) {
                     if (dropdownItem is ToolStripMenuItem) {
                         ((ToolStripMenuItem)dropdownItem).Checked = (((ToolStripMenuItem)dropdownItem).Tag?.ToString() ?? "en") == caltureName;
@@ -67,29 +66,28 @@ public partial class Form1 : Form {
         }
 
         // update calture of ui
-        ComponentUtility.ApplyCaultureUI(this);
+        this.ApplyCultureUI();
 
         // on values changed
-        model.PropertyChanged += (sender, args) => {
-            model.IsDraft = true;
+        archive.PropertyChanged += (sender, args) => {
             switch (args.PropertyName) {
                 case "Mode":
                     foreach (ToolStripMenuItem dropdownItem in modeToolStripMenuItem.DropDownItems) {
-                        dropdownItem.Checked = dropdownItem.Tag.ToString() == model.Mode.ToString();
+                        dropdownItem.Checked = dropdownItem.Tag.ToString() == archive.Mode.ToString();
                     }
                     break;
                 case "BatchSize":
                     foreach (ToolStripMenuItem dropdownItem in batchSizeToolStripMenuItem.DropDownItems) {
-                        dropdownItem.Checked = dropdownItem.Tag.ToString() == model.BatchSize.ToString();
+                        dropdownItem.Checked = dropdownItem.Tag.ToString() == archive.BatchSize.ToString();
                     }
                     break;
                 case "RecoveryMode":
                     foreach (ToolStripMenuItem dropdownItem in recoveryModeToolStripMenuItem.DropDownItems) {
-                        dropdownItem.Checked = dropdownItem.Tag.ToString() == model.RecoveryMode.ToString();
+                        dropdownItem.Checked = dropdownItem.Tag.ToString() == archive.RecoveryMode.ToString();
                     }
                     break;
                 case "RebuildIndex":
-                    rebuildIndexesToolStripMenuItem.Checked = model.RebuildIndex;
+                    rebuildIndexesToolStripMenuItem.Checked = archive.RebuildIndex;
                     break;
                 case "FileName":
                 case "FilePath":
@@ -99,169 +97,37 @@ public partial class Form1 : Form {
     }
 
     private void newToolStripMenuItem_Click(object sender, EventArgs e) {
-        if (model.IsDraft) {
-            if (model.FileName == null) {
-                var saveResult = model.Save();
-                switch (saveResult.State) {
-                    case ModelAccessState.Success:
-                        model.New();
-                        break;
-                    case ModelAccessState.Cancel:
-                        break;
-                    case ModelAccessState.Error:
-                        MessageBox.Show(saveResult.Exception?.Message ?? "", "Get unexcetpt error");
-                        break;
-                }
-            }
-            else {
-                var result = MessageBox.Show(
-                    $"Do you want to save changes to {model.FileName}?",
-                    "Confirm ",
-                    MessageBoxButtons.YesNo);
-                if (result == DialogResult.Yes) {
-                    var saveResult = model.Save();
-                    switch (saveResult.State) {
-                        case ModelAccessState.Success:
-                            model.New();
-                            break;
-                        case ModelAccessState.Cancel:
-                            break;
-                        case ModelAccessState.Error:
-                            MessageBox.Show(saveResult.Exception?.Message ?? "", "Get unexcetpt error");
-                            break;
-                    }
-                }
-                else {
-                    model.New();
-                }
-            }
-        }
-        else {
-            model.New();
-        }
+        var result = archive.New();
     }
 
     private void openToolStripMenuItem_Click(object sender, EventArgs e) {
-        if (model.IsDraft) {
-            if (model.FileName == null) {
-                var message = MessageBox.Show(
-                    $"Do you want to save changes?",
-                    "Confirm ",
-                    MessageBoxButtons.YesNo);
-                if (message == DialogResult.Yes) {
-                    var saveResult = model.Save();
-                    switch (saveResult.State) {
-                        case ModelAccessState.Success:
-                            var openResult = model.Open();
-                            switch (openResult.State) {
-                                case ModelAccessState.Success:
-                                    model.Load(openResult.Model!);
-                                    MessageBox.Show("Load Success", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                    break;
-                                case ModelAccessState.Error:
-                                    MessageBox.Show(openResult.Exception?.Message ?? "", "Get unexcetpt error");
-                                    break;
-                            }
-                            break;
-                        case ModelAccessState.Cancel:
-                            break;
-                        case ModelAccessState.Error:
-                            MessageBox.Show(saveResult.Exception?.Message ?? "", "Get unexcetpt error");
-                            break;
-                    }
-                }
-                else {
-                    var openResult = model.Open();
-                    switch (openResult.State) {
-                        case ModelAccessState.Success:
-                            model.Load(openResult.Model!);
-                            MessageBox.Show("Load Success", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            break;
-                        case ModelAccessState.Error:
-                            MessageBox.Show(openResult.Exception?.Message ?? "", "Get unexcetpt error");
-                            break;
-                    }
-                }
-            }
-            else {
-                var message = MessageBox.Show(
-                    $"Do you want to save changes to {model.FileName}?",
-                    "Confirm ",
-                    MessageBoxButtons.YesNo);
-                if (message == DialogResult.Yes) {
-                    var saveResult = model.Save();
-                    switch (saveResult.State) {
-                        case ModelAccessState.Success:
-                            var openResult = model.Open();
-                            switch (openResult.State) {
-                                case ModelAccessState.Success:
-                                    model.Load(openResult.Model!);
-                                    MessageBox.Show("Load Success", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                    break;
-                                case ModelAccessState.Error:
-                                    MessageBox.Show(openResult.Exception?.Message ?? "", "Get unexcetpt error");
-                                    break;
-                            }
-                            break;
-                        case ModelAccessState.Cancel:
-                            break;
-                        case ModelAccessState.Error:
-                            MessageBox.Show(saveResult.Exception?.Message ?? "", "Get unexcetpt error");
-                            break;
-                    }
-                }
-                else {
-                    var openResult = model.Open();
-                    switch (openResult.State) {
-                        case ModelAccessState.Success:
-                            model.Load(openResult.Model!);
-                            MessageBox.Show("Load Success", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            break;
-                        case ModelAccessState.Error:
-                            MessageBox.Show(openResult.Exception?.Message ?? "", "Get unexcetpt error");
-                            break;
-                    }
-                }
-            }
-        }
-        else {
-            var openResult = model.Open();
-            switch (openResult.State) {
-                case ModelAccessState.Success:
-                    model.Load(openResult.Model!);
-                    MessageBox.Show("Load Success", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    break;
-                case ModelAccessState.Error:
-                    MessageBox.Show(openResult.Exception?.Message ?? "", "Get unexcetpt error");
-                    break;
-            }
-        }
+        var result = archive.Open();
     }
 
     private void saveToolStripMenuItem_Click(object sender, EventArgs e) {
-        var saveResult = model.Save();
-        switch (saveResult.State) {
-            case ModelAccessState.Success:
+        var result = archive.Save();
+        switch (result.State) {
+            case FileAccessState.Success:
                 MessageBox.Show("Save Success", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 break;
-            case ModelAccessState.Cancel:
+            case FileAccessState.Cancel:
                 break;
-            case ModelAccessState.Error:
-                MessageBox.Show(saveResult.Exception?.Message ?? "", "Get unexcetpt error");
+            case FileAccessState.Error:
+                MessageBox.Show(result.Exception?.Message ?? "", "Get unexcetpt error");
                 break;
         }
     }
 
     private void saveAsToolStripMenuItem_Click(object sender, EventArgs e) {
-        var saveResult = model.SaveAs();
-        switch (saveResult.State) {
-            case ModelAccessState.Success:
+        var result = archive.SaveAs();
+        switch (result.State) {
+            case FileAccessState.Success:
                 MessageBox.Show("Save Success", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 break;
-            case ModelAccessState.Cancel:
+            case FileAccessState.Cancel:
                 break;
-            case ModelAccessState.Error:
-                MessageBox.Show(saveResult.Exception?.Message ?? "", "Get unexcetpt error");
+            case FileAccessState.Error:
+                MessageBox.Show(result.Exception?.Message ?? "", "Get unexcetpt error");
                 break;
         }
     }
@@ -271,23 +137,23 @@ public partial class Form1 : Form {
     }
 
     private void sourceToolStripMenuItem_Click(object sender, EventArgs e) {
-        Form2 form = new Form2(model.Source);
+        Form2 form = new Form2(archive.Source);
         var result = form.ShowDialog();
         if (result == DialogResult.OK) {
-            model.Source = form.EndPoint;
+            archive.Source = form.Respository;
         }
     }
 
     private void targetToolStripMenuItem_Click(object sender, EventArgs e) {
-        Form3 form = new Form3(model.Target);
+        Form3 form = new Form3(archive.Target);
         var result = form.ShowDialog();
         if (result == DialogResult.OK) {
-            model.Target = form.EndPoint;
+            archive.Target = form.Respository;
         }
     }
 
     private void rebuildIndexesToolStripMenuItem_Click(object sender, EventArgs e) {
-        model.RebuildIndex = true;
+        archive.RebuildIndex = true;
     }
 
 }

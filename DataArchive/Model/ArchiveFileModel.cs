@@ -5,11 +5,11 @@ using System.Text.Json.Serialization;
 
 namespace DataArchive.Model;
 
-public class DataModel: INotifyPropertyChanged {
+public class ArchiveFile : INotifyPropertyChanged {
 
-    public EndPoint? Source { get; set; }
+    public Respository? Source { get; set; }
 
-    public EndPoint? Target { get; set; }
+    public Respository? Target { get; set; }
 
     private Options.Mode mode = Options.Mode.Copy;
     public Options.Mode Mode {
@@ -54,8 +54,7 @@ public class DataModel: INotifyPropertyChanged {
             }
         }
     }
-    [JsonIgnore]
-    [IgnoreDataMember]
+
     private string? fileName;
     [JsonIgnore]
     [IgnoreDataMember]
@@ -69,8 +68,6 @@ public class DataModel: INotifyPropertyChanged {
         }
     }
 
-    [JsonIgnore]
-    [IgnoreDataMember]
     private string? filePath;
     [JsonIgnore]
     [IgnoreDataMember]
@@ -86,9 +83,13 @@ public class DataModel: INotifyPropertyChanged {
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void NotifyPropertyChanged([CallerMemberName] string name = "")
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    private void NotifyPropertyChanged([CallerMemberName] string name = "") {
+        IsDraft = true;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
 
+    [JsonIgnore]
     [IgnoreDataMember]
     public bool IsDraft = false;
+
 }

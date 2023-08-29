@@ -1,15 +1,15 @@
-﻿using DataArchive.Driver;
+﻿using DataArchive.Provider;
 
 namespace DataArchive.Utility;
 
-public static class DriverUtility {
+public static class ProviderUtility {
 
-    private static List<IDriver>? drivers = null;
+    private static List<IProvider>? drivers = null;
 
-    public static List<IDriver> Drivers {
+    public static List<IProvider> Drivers {
         get {
             if (drivers == null) {
-                drivers = new List<IDriver>();
+                drivers = new List<IProvider>();
                 foreach (var driver in GetAvailableDrivers()) {
                     drivers.Add(driver);
                 }
@@ -18,15 +18,15 @@ public static class DriverUtility {
         }
     }
 
-    public static IEnumerable<IDriver> GetAvailableDrivers(Direction[]? directions = null) {
-        var type = typeof(IDriver);
+    public static IEnumerable<IProvider> GetAvailableDrivers(Direction[]? directions = null) {
+        var type = typeof(IProvider);
         var types = AppDomain.CurrentDomain
             .GetAssemblies()
             .SelectMany(s => s.GetTypes())
             .Where(
                 p => p.IsClass &&
                 type.IsAssignableFrom(p))
-            .Select(x => (Activator.CreateInstance(x) as IDriver)!);
+            .Select(x => (Activator.CreateInstance(x) as IProvider)!);
         if (directions == null) {
             return types;
         }
