@@ -114,7 +114,12 @@ public static class CultureUtility {
         Thread.CurrentThread.CurrentCulture = culture;
         Thread.CurrentThread.CurrentUICulture = culture;
         Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-        config.AppSettings.Settings["Culture"].Value = Thread.CurrentThread.CurrentCulture.Name;
+        if (config.AppSettings.Settings["Culture"] == null) {
+            config.AppSettings.Settings.Add("Culture", Thread.CurrentThread.CurrentCulture.Name);
+        }
+        else {
+            config.AppSettings.Settings["Culture"].Value = Thread.CurrentThread.CurrentCulture.Name;
+        }
         config.Save();
     }
 

@@ -18,6 +18,7 @@ public static class ArchiveFileUtility {
             archive.RebuildIndex = false;
             archive.FileName = null;
             archive.FilePath = null;
+            archive.IsDraft = false;
         }
         return result;
     }
@@ -53,7 +54,7 @@ public static class ArchiveFileUtility {
             if (dialog.ShowDialog() == DialogResult.OK) {
                 result = archive.Load(dialog.FileName);
                 if (result.State == FileAccessState.Success) {
-                    MessageBox.Show(archive.FileName, "File Load Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"{archive.FileName} is loaded", "File Load Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 return result;
             }
